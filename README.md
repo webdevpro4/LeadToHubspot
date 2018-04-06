@@ -24,7 +24,7 @@ The module creates or updates a lead based on the transmitted data array. The fi
 * The data **must contain a key 'email'** (it is used as identifier).
 * Every key in the data array, **must be a field in your CRM properties**. You can find and overview of the default or create additional properties at hubspot.com -> Settings / Properties).
 
-** I strongly recommend a server-sided form validation like [Valitron](https://github.com/vlucas/valitron) **
+**I strongly recommend a server-sided form validation like [Valitron](https://github.com/vlucas/valitron)**
 
 ## Example Code
 Example data array:
@@ -59,6 +59,6 @@ Example usage after form post:
 ###  Hubspot Lead not saved: 400 Bad Request: ...
 The data you pass is not valid for a creating/update a contact in hubspot. This mostly happens when you use non-existing properties.
 
-* 1. Check for typos in your data array
-* 2. Check, if properties exist in Hubspot
-* 3. Unquote the line 'die(print_f(json_encode($param)));' in site/modules/LeadToHubspot.module and check if the output is valid JSON format
+1. Check for typos in your data array
+2. Check, if properties exist in Hubspot
+3. Unquote the line 'die(print_f(json_encode($param)));' in site/modules/LeadToHubspot.module and check if the output is valid JSON format
