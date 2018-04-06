@@ -1,0 +1,77 @@
+<?php
+class LeadToHubspot extends WireData implements Module, ConfigurableModule {
+
+    static function getModuleInfo() {
+        return [
+            'title'   => 'Save Lead in Hubspot',
+            'summary' => 'Save you leads and contacts directly in your Hubspot CRM.',
+            'version' => '0.0.1',
+            'author'  => 'danielstieber',
+            'href'    => 'https://github.com/danielstieber/LeadToHubspot',
+            'icon'    => 'address-card',
+            'autoload'=> false,
+            'singular'=> false
+        ];
+    }
+    const SITE_API_URL = "https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/";
+
+    public function saveLead(array $data) {
+        // This module uses the field 'email' as lead identifier. It is required to create/update a lead.
+        if(isset($data['email'])) {
+            $param = [];
+            foreach ($data as $k => $v) {
+                if(!empty(trim($v))) { // avoid to override data of existing leads with empty field values
+                    $param['properties'][] = [ // hubspots property syntax 
+                        'property' => $k,
+                        'value' => $v
+                    ];
+                }
+            }
+            $url = self::SITE_API_URL.$data['email'].'/?hapikey='.$this->api_key;
+
+            $http = new WireHttp();
+            $response = $http->post($url, json_encode($param));
+            if($response !== false) {
+              return true;
+            } else {
+                $this->warning("Hubspot Lead not saved: " . $http->getError(), Notice::log); // Create warning in Processwire backend
+                return false;
+            }
+        } else {
+            // Log an error, if a user is able to send a form without email.
+            $this->error("A user managed to send a form without an email-address. Please check your form validation! A server-sided validation (e.g. via Valitron) is strongly recommended.");
+            return false;
+        }
+    }
+
+    public function __construct()
+    {
+        //
+    }
+    public static function getModuleConfigInputfields(array $data)
+    {
+        $wrap = new InputfieldWrapper();
+        $form = wire('modules')->get('InputfieldFieldset');
+        $form->label = __('Hubspot API Configuration');
+        $form->notes = __('To get your API-Key, log into hubspot.com, click on your avatar in the top right corner and go to "Integrations / Hubspot API-Key".');
+        $form->collapsed = Inputfield::collapsedPopulated;
+        $inputfields = [
+            'api_key' => __('API key')
+        ];
+        foreach($inputfields as $name => $label) {
+            $f = wire('modules')->get('InputfieldText');
+            $f->attr('name', $name);
+            $f->label = $label;
+            $f->required = true;
+            $f->columnWidth = 100;
+            if(isset($data[$name]))
+                $f->attr('value', $data[$name]);
+            $form->add($f);
+        }
+        $wrap->add($form);
+
+
+        return $wrap;
+    }
+}
+?>
