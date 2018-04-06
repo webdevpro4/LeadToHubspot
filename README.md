@@ -47,8 +47,8 @@ Example usage after form post:
 		'lastname' => $input->post->lastname,
 		'message' => $input->post->message,
 	];
- 	$lead = array_map('trim', $lead);
- 	if($hubspot->saveLead($lead))
+
+ 	if($hubspot->saveLead($data))
  		echo "Thank you for your Message";
  	else
  		echo "Oops, an error accured while transmitting your data. We are sorry for the inconvinience. For your own security, your data has not been saved. Why not contact us directly at office@companyemail.com and we have talk about your request, while our IT-team is fixing the problem?";
@@ -60,5 +60,5 @@ Example usage after form post:
 The data you pass is not valid for a creating/update a contact in hubspot. This mostly happens when you use non-existing properties.
 
 1. Check for typos in your data array
-2. Check, if properties exist in Hubspot
+2. Check if properties exist in Hubspot
 3. Unquote the line 'die(print_f(json_encode($param)));' in site/modules/LeadToHubspot.module and check if the output is valid JSON format
