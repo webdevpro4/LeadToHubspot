@@ -26,6 +26,7 @@ The module creates or updates a lead based on the transmitted data array. The fi
 
 ** I strongly recommend a server-sided form validation like [Valitron](https://github.com/vlucas/valitron) **
 
+# Example Code
 Example data array:
 ```PHP
 	$data = [
@@ -34,16 +35,30 @@ Example data array:
 		'lastname' => 'Doe',
 		'company' => 'ExampleCompany Ltd.',
 		'phone' => '123456789'
-	]
+	];
 ```
 
-Example data array:
+Example usage after form post:
 ```PHP
+	// ... validation of form data
 	$data = [
-		'email' => 'john.doe@example.com',
-		'firstname' => 'John',
-		'lastname' => 'Doe',
-		'company' => 'ExampleCompany Ltd.',
-		'phone' => '123456789'
-	]
+		'email' => $input->post->email,
+		'firstname' => $input->post->firstname,
+		'lastname' => $input->post->lastname,
+		'message' => $input->post->message,
+	];
+ 	$lead = array_map('trim', $lead);
+ 	if($hubspot->saveLead($lead))
+ 		echo "Thank you for your Message";
+ 	else
+ 		echo "Oops, an error accured while transmitting your data. We are sorry for the inconvinience. For your own security, your data has not been saved. Why not contact us directly at office@companyemail.com and we have talk about your request, while our IT-team is fixing the problem?";
+?>
 ```
+
+# Troubleshooting (check your ProcessWire warning & error logs)
+##  Hubspot Lead not saved: 400 Bad Request: ...
+The data you pass is not valid for a creating/update a contact in hubspot. This mostly happens when you use non-existing properties.
+
+* 1. Check for typos in your data array
+* 2. Check, if properties exist in Hubspot
+* 3. Unquote the line 'die(print_f(json_encode($param)));' in site/modules/LeadToHubspot.module and check if the output is valid JSON format
