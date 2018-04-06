@@ -9,7 +9,7 @@ Module for ProcessWire that saves contacts in the Hubspot CRM (e.g. from a leadf
 # API
 You must create an API key in your Hubspot account. To get your API-Key, log into hubspot.com, click on your avatar in the top right corner and go to "Integrations / Hubspot API-Key". Add the API key in the moduel settings page.
 
-![module settings](https://imgur.com/bGfBU49)
+![module settings](https://i.imgur.com/bGfBU49.png)
 
 # Usage
 1. Read the restrictions
