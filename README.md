@@ -48,19 +48,18 @@ Example data array:
 
 Example usage after form post:
 ```PHP
-	// ... validation of form data
-	$data = [
-		'email' => $input->post->email,
-		'firstname' => $input->post->firstname,
-		'lastname' => $input->post->lastname,
-		'message' => $input->post->message,
-	];
+// ... validation of form data
+$data = [
+	'email' => $input->post->email,
+	'firstname' => $input->post->firstname,
+	'lastname' => $input->post->lastname,
+	'message' => $input->post->message,
+];
 
- 	if($hubspot->saveLead($data))
- 		echo "Thank you for your Message.";
- 	else
- 		echo "Oops, an error accured while transmitting your data. We are sorry for the inconvinience. For your own security, your data has not been saved. Why not contact us directly at office@companyemail.com and we have talk about your request, while our IT-team is fixing the problem?";
-?>
+if($hubspot->saveLead($data))
+	echo "Thank you for your Message.";
+else
+	echo "Oops, an error accured while transmitting your data. We are sorry for the inconvinience. For your own security, your data has not been saved. Why not contact us directly at office@companyemail.com and we have talk about your request, while our IT-team is fixing the problem?";
 ```
 
 ## Troubleshooting (check your ProcessWire warning & error logs)
@@ -76,7 +75,7 @@ Hubspot is very picky, when it comes to Date and DateTime fields. (Learn more he
 Example:
 ```PHP
 $lead = [
- 			'email' => $input->post->email,
- 			'newsletter_registration_date' => strtotime('today midnight') * 1000, // newsletter_registration_date is a Hubspot Datepicker property
+ 	'email' => $input->post->email,
+ 	'newsletter_registration_date' => strtotime('today midnight') * 1000, // newsletter_registration_date is a Hubspot Datepicker property
 ]
 ```
