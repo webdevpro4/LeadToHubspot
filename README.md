@@ -7,20 +7,22 @@ Module for ProcessWire that saves contacts in the Hubspot CRM (e.g. from a leadf
 3. Goto the modules admin page, click on refresh and install it.
 
 ## API
-You must create an API key in your Hubspot account. To get your API-Key, log into hubspot.com, click on your avatar in the top right corner and go to "Integrations / Hubspot API-Key". Add the API key in the moduel settings page.
+You must create an API key in your Hubspot account. To get your API-Key, log into hubspot.com, click on your avatar in the top right corner and go to "Integrations / Hubspot API-Key". Add the API key in the module settings page.
 
 ![module settings](https://i.imgur.com/bGfBU49.png)
 
 ## Usage
 1. Read the restrictions
-2. Call the module: ´$hubspot = $modules->get("LeadToHubspot");´
-3. Call function saveLead and pass your data array: ´$hubspot->saveLead(['email' => 'john.doe@example.com', 'firstname' => 'John', 'lastname' => 'Doe'])´
+2. Call the module: `$hubspot = $modules->get("LeadToHubspot");`
+3. Call function saveLead and pass your data array: `$hubspot->saveLead(['email' => 'john.doe@example.com', 'firstname' => 'John', 'lastname' => 'Doe'])`
 
 ## Additional Methods
-### getProperty(string $name)
-Returns the properties of a Hubspot contacts property in JSON. Returns false if the property does not exist.
+### Get information of a Hubspot contacts property
+Example: `$hubspot->getProperty('firstname');`
+Returns a Hubspot contacts property in JSON. Returns false if the property does not exist.
 
-### createProperty(string $name, string $label, string $type = "string", string $fieldType = "text", string $description = "", string $groupName = "contactinformation") (restricted)
+### Create a new Hubspot contacts property (restricted)
+Example: `$hubspot->createProperty('favourite_color', 'Favourite Color');`
 Creates a new Hubspot contacts property. Currently only text, textarea, date, number and booleancheckbox are supported.
 
 ## Important Notes
@@ -37,32 +39,32 @@ The module creates or updates a lead based on the transmitted data array. The fi
 ## Example Code
 Example data array:
 ```PHP
-	$data = [
-		'email' => 'john.doe@example.com',
-		'firstname' => 'John',
-		'lastname' => 'Doe',
-		'company' => 'ExampleCompany Ltd.',
-		'phone' => '123456789'
-	];
+$data = [
+  'email' => 'john.doe@example.com',
+  'firstname' => 'John',
+  'lastname' => 'Doe',
+  'company' => 'ExampleCompany Ltd.',
+  'phone' => '123456789'
+];
 ```
 
 Example usage after form post:
 ```PHP
 // ... validation of form data
 $data = [
-	'email' => $input->post->email,
-	'firstname' => $input->post->firstname,
-	'lastname' => $input->post->lastname,
-	'message' => $input->post->message,
+  'email' => $input->post->email,
+  'firstname' => $input->post->firstname,
+  'lastname' => $input->post->lastname,
+  'message' => $input->post->message,
 ];
 
 if($hubspot->saveLead($data))
-	echo "Thank you for your Message.";
+  echo "Thank you for your Message.";
 else
-	echo "Oops, an error accured while transmitting your data. We are sorry for the inconvinience. For your own security, your data has not been saved. Why not contact us directly at office@companyemail.com and we have talk about your request, while our IT-team is fixing the problem?";
+  echo "Oops, an error accured while transmitting your data. We are sorry for the inconvinience. For your own security, your data has not been saved. Why not contact us directly at office@companyemail.com and we have talk about your request, while our IT-team is fixing the problem?";
 ```
 
-## Troubleshooting (check your ProcessWire warning & error logs)
+## Troubleshooting (check your ProcessWire warning logs)
 ###  Hubspot Lead not saved: 400 Bad Request: ...
 The data you pass is not valid for a creating/update a contact in hubspot. This mostly happens when you use non-existing properties.
 
@@ -71,7 +73,8 @@ The data you pass is not valid for a creating/update a contact in hubspot. This 
 3. Unquote the line 'die(var_dump(json_encode($param)));' in site/modules/LeadToHubspot.module and check if the output is valid JSON format
 
 ### Working with Date & DateTime Data
-Hubspot is very picky, when it comes to Date and DateTime fields. (Learn more here: [How should timestamps be formatted for HubSpot's APIs?](https://developers.hubspot.com/docs/faq/how-should-timestamps-be-formatted-for-hubspots-apis)
+Hubspot is very picky, when it comes to Date and DateTime fields. (Learn more here: [How should timestamps be formatted for HubSpot's APIs?](https://developers.hubspot.com/docs/faq/how-should-timestamps-be-formatted-for-hubspots-apis))
+
 Example:
 ```PHP
 $lead = [
