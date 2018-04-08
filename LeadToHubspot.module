@@ -28,7 +28,7 @@ class LeadToHubspot extends WireData implements Module, ConfigurableModule {
                 }
             }
             $url = self::SITE_API_URL.$data['email'].'/?hapikey='.$this->api_key;
-            // die(print_f(json_encode($param)));
+            //die(var_dump(json_encode($param)));
             $http = new WireHttp();
             $response = $http->post($url, json_encode($param));
             if($response !== false) {

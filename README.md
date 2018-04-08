@@ -49,7 +49,7 @@ Example usage after form post:
 	];
 
  	if($hubspot->saveLead($data))
- 		echo "Thank you for your Message";
+ 		echo "Thank you for your Message.";
  	else
  		echo "Oops, an error accured while transmitting your data. We are sorry for the inconvinience. For your own security, your data has not been saved. Why not contact us directly at office@companyemail.com and we have talk about your request, while our IT-team is fixing the problem?";
 ?>
@@ -61,4 +61,14 @@ The data you pass is not valid for a creating/update a contact in hubspot. This 
 
 1. Check for typos in your data array
 2. Check if properties exist in Hubspot
-3. Unquote the line 'die(print_f(json_encode($param)));' in site/modules/LeadToHubspot.module and check if the output is valid JSON format
+3. Unquote the line 'die(var_dump(json_encode($param)));' in site/modules/LeadToHubspot.module and check if the output is valid JSON format
+
+### Working with Date & DateTime Data
+Hubspot is very picky, when it comes to Date and DateTime fields. (Learn more here: [How should timestamps be formatted for HubSpot's APIs?](https://developers.hubspot.com/docs/faq/how-should-timestamps-be-formatted-for-hubspots-apis)
+Example:
+```PHP
+$lead = [
+ 			'email' => $input->post->email,
+ 			'newsletter_registration_date' => strtotime('today midnight') * 1000, // newsletter_registration_date is a Hubspot Datepicker property
+]
+``
