@@ -16,13 +16,21 @@ You must create an API key in your Hubspot account. To get your API-Key, log int
 2. Call the module: ´$hubspot = $modules->get("LeadToHubspot");´
 3. Call function saveLead and pass your data array: ´$hubspot->saveLead(['email' => 'john.doe@example.com', 'firstname' => 'John', 'lastname' => 'Doe'])´
 
+## Additional Methods
+### getProperty(string $name)
+Returns the properties of a Hubspot contacts property in JSON. Returns false if the property does not exist.
+
+### createProperty(string $name, string $label, string $type = "string", string $fieldType = "text", string $description = "", string $groupName = "contactinformation") (restricted)
+Creates a new Hubspot contacts property. Currently only text, textarea, date, number and booleancheckbox are supported.
+
 ## Important Notes
 ### Functionality
 The module creates or updates a lead based on the transmitted data array. The field 'email' works as identifier. 
 
 ### Restrictions in this version
 * The data **must contain a key 'email'** (it is used as identifier).
-* Every key in the data array, **must be a field in your CRM properties**. You can find and overview of the default or create additional properties at hubspot.com -> Settings / Properties).
+* Every key in the data array, **must be a field in your CRM properties**. You can find and overview of the default or create additional properties at hubspot.com -> Settings / Properties), or use the getProperty / createProperty methods.
+* For createProperty currently only text, textarea, date, number and booleancheckbox field types are supported.
 
 **I strongly recommend a server-sided form validation like [Valitron](https://github.com/vlucas/valitron)**
 
@@ -71,4 +79,4 @@ $lead = [
  			'email' => $input->post->email,
  			'newsletter_registration_date' => strtotime('today midnight') * 1000, // newsletter_registration_date is a Hubspot Datepicker property
 ]
-``
+```

@@ -4,8 +4,8 @@ class LeadToHubspot extends WireData implements Module, ConfigurableModule {
     static function getModuleInfo() {
         return [
             'title'   => 'Save Lead in Hubspot',
-            'summary' => 'Save you leads and contacts directly in your Hubspot CRM.',
-            'version' => '0.0.1',
+            'summary' => 'Create or update contacts in your Hubspot CRM.',
+            'version' => '0.0.2',
             'author'  => 'danielstieber',
             'href'    => 'https://github.com/danielstieber/LeadToHubspot',
             'icon'    => 'address-card',
@@ -13,11 +13,12 @@ class LeadToHubspot extends WireData implements Module, ConfigurableModule {
             'singular'=> false
         ];
     }
-    const SITE_API_URL = "https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/";
+    const SITE_API_BASE = "https://api.hubapi.com/";
 
     public function saveLead(array $data) {
         // This module uses the field 'email' as lead identifier. It is required to create/update a lead.
         if(isset($data['email'])) {
+            $api = "contacts/v1/contact/createOrUpdate/email/".$data['email'];
             $param = [];
             foreach ($data as $k => $v) {
                 if(!empty(trim($v))) { // avoid to override data of existing leads with empty field values
@@ -27,10 +28,10 @@ class LeadToHubspot extends WireData implements Module, ConfigurableModule {
                     ];
                 }
             }
-            $url = self::SITE_API_URL.$data['email'].'/?hapikey='.$this->api_key;
             //die(var_dump(json_encode($param)));
             $http = new WireHttp();
-            $response = $http->post($url, json_encode($param));
+            $http->setHeaders(['Content-Type' => 'application/json']);
+            $response = $http->post($this->buildUrl($api), json_encode($param));
             if($response !== false) {
               return true;
             } else {
@@ -39,9 +40,38 @@ class LeadToHubspot extends WireData implements Module, ConfigurableModule {
             }
         } else {
             // Log an error, if a user is able to send a form without email.
-            $this->error("A user managed to send a form without an email-address. Please check your form validation! A server-sided validation (e.g. via Valitron) is strongly recommended.");
+            $this->warning("A user managed to send a form without an email-address. Please check your form validation! A server-sided validation (e.g. via Valitron) is strongly recommended.");
             return false;
         }
+    }
+    public function getProperty(string $name) {
+        $api = "properties/v1/contacts/properties/named/".$name;
+        $http = new WireHttp();
+        $http->setHeaders(['Content-Type' => 'application/json']);
+        return $http->get($this->buildUrl($api));
+    }
+    public function addProperty(string $name, string $label, string $type = "string", string $fieldType = "text", string $description = "", string $groupName = "contactinformation") {
+        $api = "properties/v1/contacts/properties";
+        $param = [
+            'name' => $name,
+            'label' => $label,
+            'type' => $type,
+            'fieldType' => $fieldType,
+            'description' => $description,
+            'groupName' => $groupName,
+        ];
+        $http = new WireHttp();
+        $http->setHeaders(['Content-Type' => 'application/json']);
+        $response =  $http->post($this->buildUrl($api), json_encode($param));
+        if($response !== false) {
+          return true;
+        } else {
+            $this->warning("Hubspot Property not created: " . $http->getError(), Notice::log); // Create warning in Processwire backend
+            return false;
+        }
+    }
+    protected function buildUrl(string $api) {
+        return self::SITE_API_BASE.$api.'/?hapikey='.$this->api_key;
     }
 
     public function __construct()
