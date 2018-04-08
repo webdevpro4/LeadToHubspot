@@ -50,7 +50,7 @@ class LeadToHubspot extends WireData implements Module, ConfigurableModule {
         $http->setHeaders(['Content-Type' => 'application/json']);
         return $http->get($this->buildUrl($api));
     }
-    public function addProperty(string $name, string $label, string $type = "string", string $fieldType = "text", string $description = "", string $groupName = "contactinformation") {
+    public function createProperty(string $name, string $label, string $type = "string", string $fieldType = "text", string $description = "", string $groupName = "contactinformation") {
         $api = "properties/v1/contacts/properties";
         $param = [
             'name' => $name,
