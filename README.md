@@ -1,3 +1,4 @@
+**OUTDATED. [SubmitToHubspot](https://github.com/danielstieber/SubmitToHubspot/) is what you are looking for**
 # LeadToHubspot
 Module for ProcessWire that saves contacts in the Hubspot CRM (e.g. from a leadform).
 
